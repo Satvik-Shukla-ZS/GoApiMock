@@ -7,10 +7,11 @@ import (
 )
 
 type Field struct {
-	Type    string
-	MinChar int
-	MaxChar int
-	Options []string
+	Type        string
+	MinChar     int
+	MaxChar     int
+	EnumOptions []string
+	Options     []string
 }
 
 type Entity struct {
@@ -20,7 +21,7 @@ type Entity struct {
 
 func parseField(fieldStr string) Field {
 	field := Field{}
-	re := regexp.MustCompile(`(\w+)\s*:\s*(\w+)\s*\{([^}]*)\}`)
+	re := regexp.MustCompile(`(\w+)\s*:\s*([\w.]+)\s*\{([^}]*)\}`)
 	matches := re.FindStringSubmatch(fieldStr)
 	if len(matches) == 4 {
 		field.Type = matches[2]
@@ -31,6 +32,8 @@ func parseField(fieldStr string) Field {
 				fmt.Sscanf(option, "minChar=%d", &field.MinChar)
 			} else if strings.HasPrefix(option, "maxChar=") {
 				fmt.Sscanf(option, "maxChar=%d", &field.MaxChar)
+			} else if field.Type == "enum" {
+				field.EnumOptions = append(field.EnumOptions, option)
 			} else {
 				field.Options = append(field.Options, option)
 			}
@@ -55,11 +58,13 @@ func parseEntity(content string) Entity {
 	return entity
 }
 
-func ParseFileContents(fileContents []FileContent) map[string]Entity {
+func ParseFileContents(fileContents []FileContent) (map[string]Entity, []string) {
 	entities := make(map[string]Entity)
+	order := make([]string, 0)
 	for _, fileContent := range fileContents {
 		entity := parseEntity(fileContent.Content)
 		entities[entity.Name] = entity
+		order = append(order, entity.Name)
 	}
-	return entities
+	return entities, order
 }

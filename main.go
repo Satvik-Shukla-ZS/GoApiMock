@@ -1,18 +1,16 @@
 package main
 
 import (
-	"GoApiMock/Generator"
-	"GoApiMock/Parser"
-	"fmt"
+	"GoApiMock/Init"
+	"GoApiMock/Server"
 )
 
 func main() {
-	data := Parser.ReadAllEntityFile()
-	dataParsed := Parser.ParseFileContents(data)
+	data := Init.InitFieldParsing()
+	routes, err := Init.InitRouteParsing()
+	if err != nil {
+		return
+	}
 
-	requested := make(map[string]Generator.Options)
-	requested["USER"] = Generator.Options{Min: 5, Max: 10}
-
-	result := Generator.GenerateEntities(requested, dataParsed)
-	fmt.Println(result)
+	Server.InitServer(routes, data)
 }
