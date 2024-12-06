@@ -31,5 +31,15 @@ func InitFieldParsing() map[string][]map[string]any {
 
 	result := Generator.GenerateEntities(requested, dataParsed)
 
+	//for key, entity := range result {
+	//	fmt.Println(key)
+	//	for _, item := range entity {
+	//		for keyEntity, value := range item {
+	//			fmt.Println("    ", keyEntity, value)
+	//		}
+	//		fmt.Println()
+	//	}
+	//}
+
 	return result
 }

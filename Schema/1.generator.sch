@@ -1,2 +1,4 @@
-USER : min=5 : max=20
-POST : min=40 : max=40
+USER : min=2 : max=5
+POST : min=2 : max=5
+CLOUD-ACCOUNT : min=2 : max=5
+CLOUD-PROVIDER : min=2 : max=5

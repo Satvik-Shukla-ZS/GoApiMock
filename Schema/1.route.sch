@@ -30,3 +30,24 @@ GET /posts/<>
        isPublished
        revenue
        readers
+
+GET /cloud-account/
+   CLOUD-ACCOUNT[] :
+       id
+       content
+       created_at
+       user
+       isPublished
+       revenue
+       readers
+
+GET /cloud-account/<>/infra/<>/
+   CLOUD-ACCOUNT :
+       id
+
+GET /cloud-provider
+   CLOUD-PROVIDER[] :
+       id
+       content
+       created_at
+       cloud-account

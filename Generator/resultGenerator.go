@@ -2,6 +2,7 @@ package Generator
 
 import (
 	"GoApiMock/Parser"
+	"fmt"
 	"github.com/google/uuid"
 	"math/rand"
 	"strings"
@@ -112,6 +113,21 @@ func GenerateEntities(generator []Options, entities map[string]Parser.Entity) ma
 									fieldValues[fieldName] = relatedEntities[randomIndex][entityField]
 								}
 							}
+						} else if result[field.Type] != nil {
+							found := result[field.Type]
+							copies := make([]map[string]any, 0)
+							lengthChosen := rand.Intn(field.MaxChar-field.MinChar+1) + field.MinChar
+							for i := 0; i < lengthChosen; i++ {
+								randomIndex := rand.Intn(len(found))
+								copyData := make(map[string]any)
+								for k, v := range found[randomIndex] {
+									copyData[k] = v
+								}
+								copies = append(copies, copyData)
+							}
+							fieldValues[fieldName] = copies
+						} else {
+							fmt.Println("Unknown type", field.Type)
 						}
 					}
 				}

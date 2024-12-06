@@ -21,7 +21,7 @@ type Entity struct {
 
 func parseField(fieldStr string) Field {
 	field := Field{}
-	re := regexp.MustCompile(`(\w+)\s*:\s*([\w.]+)\s*\{([^}]*)\}`)
+	re := regexp.MustCompile(`(\w+)\s*:\s*([\w.-]+)\s*\{([^}]*)\}`)
 	matches := re.FindStringSubmatch(fieldStr)
 	if len(matches) == 4 {
 		field.Type = matches[2]
@@ -42,29 +42,59 @@ func parseField(fieldStr string) Field {
 	return field
 }
 
-func parseEntity(content string) Entity {
+func parseEntity(content string) []Entity {
 	lines := strings.Split(content, "\n")
+	entities := make([]Entity, 0)
+
 	entity := Entity{
-		Name:   strings.TrimSpace(strings.Split(lines[0], ":")[0]),
+		Name:   "",
 		Fields: make(map[string]Field),
 	}
-	for _, line := range lines[1:] {
+
+	for _, line := range lines[0:] {
 		line = strings.TrimSpace(line)
 		if line != "" {
-			fieldName := strings.TrimSpace(strings.Split(line, ":")[0])
-			entity.Fields[fieldName] = parseField(line)
+			if entity.Name == "" {
+				fieldName := strings.TrimSpace(strings.Split(line, ":")[0])
+				entity.Name = fieldName
+			} else {
+				fieldName := strings.TrimSpace(strings.Split(line, ":")[0])
+				entity.Fields[fieldName] = parseField(line)
+			}
+		} else if line == "" {
+			entities = append(entities, entity)
+			//fmt.Println(entity)
+			entity = Entity{
+				Name:   "",
+				Fields: make(map[string]Field),
+			}
+		}
+		if entity.Name != "" {
+			entities = append(entities, entity)
+			//fmt.Println(entity)
 		}
 	}
-	return entity
+	return entities
 }
 
 func ParseFileContents(fileContents []FileContent) (map[string]Entity, []string) {
-	entities := make(map[string]Entity)
+	entitiesMap := make(map[string]Entity)
 	order := make([]string, 0)
 	for _, fileContent := range fileContents {
-		entity := parseEntity(fileContent.Content)
-		entities[entity.Name] = entity
-		order = append(order, entity.Name)
+		entities := parseEntity(fileContent.Content)
+		for _, entity := range entities {
+			entitiesMap[entity.Name] = entity
+			order = append(order, entity.Name)
+		}
 	}
-	return entities, order
+
+	//for k, v := range entitiesMap {
+	//	fmt.Println(k)
+	//	for key, value := range v.Fields {
+	//		fmt.Println("    ", key, value)
+	//	}
+	//	fmt.Println()
+	//}
+
+	return entitiesMap, order
 }
