@@ -40,6 +40,8 @@ GET /cloud-account/
        isPublished
        revenue
        readers
+       providers
+
 
 GET /cloud-account/<>/infra/<>/
    CLOUD-ACCOUNT :
@@ -50,4 +52,3 @@ GET /cloud-provider
        id
        content
        created_at
-       cloud-account
