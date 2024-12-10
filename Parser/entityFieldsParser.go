@@ -21,7 +21,7 @@ type Entity struct {
 
 func parseField(fieldStr string) Field {
 	field := Field{}
-	re := regexp.MustCompile(`(\w+)\s*:\s*([\w.-]+)\s*\{([^}]*)\}`)
+	re := regexp.MustCompile(`(\w+)\s*:\s*([\w\[\].-]+)\s*\{([^}]*)\}`)
 	matches := re.FindStringSubmatch(fieldStr)
 	if len(matches) == 4 {
 		field.Type = matches[2]

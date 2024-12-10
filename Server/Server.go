@@ -78,8 +78,6 @@ func routeHandler(w http.ResponseWriter, r *http.Request) {
 	isMultiple := false
 	var limit int
 
-	fmt.Println(dataContext)
-
 	// Check for suffixes [] or [3]
 	re := regexp.MustCompile(`\[(\d*)\]$`)
 	matches := re.FindStringSubmatch(entityName)

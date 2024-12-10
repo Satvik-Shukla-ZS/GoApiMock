@@ -75,6 +75,15 @@ func GenerateRandomInt(min, max int) int {
 	return rand.Intn(max-min+1) + min
 }
 
+func GenerateRandomStringArray(min, max int) []string {
+	length := rand.Intn(max-min+1) + min
+	result := make([]string, length)
+	for i := range result {
+		result[i] = GenerateRandomString(min, max)
+	}
+	return result
+}
+
 func GenerateEntities(generator []Options, entities map[string]Parser.Entity) map[string][]map[string]any {
 	result := make(map[string][]map[string]any)
 	for _, options := range generator {
@@ -86,6 +95,8 @@ func GenerateEntities(generator []Options, entities map[string]Parser.Entity) ma
 					switch field.Type {
 					case "string":
 						fieldValues[fieldName] = GenerateRandomString(field.MinChar, field.MaxChar)
+					case "string[]":
+						fieldValues[fieldName] = GenerateRandomStringArray(field.MinChar, field.MaxChar)
 					case "email":
 						fieldValues[fieldName] = GenerateRandomEmail(field.MinChar, field.MaxChar)
 					case "content":
